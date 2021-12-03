@@ -93,6 +93,11 @@ source /path/to/venv/bin/activate
 ```
 - pytorch(https://pytorch.org/)
 
+#### NOTE
+PyTorch version 0.4.1 is installed, but the current version of Torchvision uses v1.9.1 of torch. To avoid installing the newer version of torch, I am changing the torchvision version here to be an older version.
+
+ALTERNATIVELY, YOU CAN GO THROUGH THE FILES AND FIND WHERE TORCHVISION IS USED, THEN COMMENT IT OUT TO AVOID INSTALLING/USING TORCHVISION.
+
 ```bash
 pip3 install http://download.pytorch.org/whl/cpu/torch-0.4.1-cp36-cp36m-linux_x86_64.whl 
 pip3 install torchvision==0.2.2
@@ -113,9 +118,7 @@ Our system require a reference motion to imitate. We provide sample references s
 To learn and simulate, we should provide such a meta data. We provide default meta data in /data/metadata.txt. We parse the text and set the environment. Please note that the learning settings and the test settings should be equal.(metadata.txt should not be changed.)
 
 #### NOTE
-```bash
 CHANGE BOOST VERSION IN PYTHON AND RENDER CMAKELIST FILES
-```
 
 
 ### Compile and Run
