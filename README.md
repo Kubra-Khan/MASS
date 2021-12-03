@@ -73,6 +73,14 @@ sudo apt-get install libopenscenegraph-dev
 ```
 2. install DART v6.3.0
 
+#### NOTE
+When installing without superuser privileges, create a new installation folder for DART using:
+
+```bash
+cmake -DCMAKE_INSTALL_PREFIX=/home/NEW_DART_INSTALLATION_FOLDER_PATH ..
+```
+instead of the cmake line below.
+
 ```bash
 git clone git://github.com/dartsim/dart.git
 cd dart
@@ -122,6 +130,12 @@ CHANGE BOOST VERSION IN PYTHON AND RENDER CMAKELIST FILES
 
 
 ### Compile and Run
+When installing without superuser privileges, build from the new installation DART folder using:
+
+```bash
+cmake -DCMAKE_PREFIX_PATH=/home/NEW_DART_INSTALLATION_FOLDER_PATH ..
+```
+instead of the cmake line below for making the MASS build.
 
 ```bash
 mkdir build
@@ -135,6 +149,13 @@ make -j8
 cd python
 source /path/to/virtualenv/
 python3 main.py -d ../data/metadata.txt
+```
+
+####NOTE
+
+If you are not a superuser, training won't run because it cannot find some libraries in /usr/local/etc. To fix this, you need to add the dart installation folder to the library path:
+```bash
+export LD_LIBRARY_PATH=/home/dart_installation_path:$LD_LIBRARY_PATH
 ```
 
 All the training networks are saved in /nn folder.
