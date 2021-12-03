@@ -112,6 +112,8 @@ Our system require a reference motion to imitate. We provide sample references s
 
 To learn and simulate, we should provide such a meta data. We provide default meta data in /data/metadata.txt. We parse the text and set the environment. Please note that the learning settings and the test settings should be equal.(metadata.txt should not be changed.)
 
+CHANGE BOOST VERSION IN PYTHON AND RENDER CMAKELIST FILES
+
 
 ### Compile and Run
 
