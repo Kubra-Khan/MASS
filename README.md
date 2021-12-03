@@ -151,7 +151,7 @@ source /path/to/virtualenv/
 python3 main.py -d ../data/metadata.txt
 ```
 
-####NOTE
+#### NOTE
 
 If you are not a superuser, training won't run because it cannot find some libraries in /usr/local/etc. To fix this, you need to add the dart installation folder to the library path:
 ```bash
