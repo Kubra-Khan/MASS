@@ -4,6 +4,8 @@
 #include "BVH.h"
 #include "Muscle.h"
 #include "dart/collision/bullet/bullet.hpp"
+#include <random>
+#include <time.h>
 using namespace dart;
 using namespace dart::simulation;
 using namespace dart::dynamics;
@@ -11,7 +13,7 @@ using namespace MASS;
 
 Environment::
 Environment()
-	:mControlHz(30),mSimulationHz(900),mWorld(std::make_shared<World>()),mUseMuscle(true),w_q(0.65),w_v(0.1),w_ee(0.15),w_com(0.1)
+	:mControlHz(30),mSimulationHz(900),mWorld(std::make_shared<World>()),mUseMuscle(true),w_q(0.65),w_v(0.1),w_ee(0.15),w_com(0.1), random_seed(123)
 {
 
 }
@@ -69,6 +71,10 @@ Initialize(const std::string& meta_file,bool load_obj)
 
 			character->LoadSkeleton(std::string(MASS_ROOT_DIR)+str2,load_obj);
 		}
+		else if(!index.compare("random_seed")){
+			ss>>random_seed;
+			std::cout << "random_seed: " << random_seed << std::endl;
+		}
 		else if(!index.compare("muscle_file")){
 			std::string str2;
 			ss>>str2;
@@ -95,6 +101,14 @@ Initialize(const std::string& meta_file,bool load_obj)
 	}
 	ifs.close();
 	
+
+	double upper_mean = 0;
+	double upper_sigma = 0.4;
+	upper_dist = std::normal_distribution<double>{upper_mean,upper_sigma};
+
+	double lower_mean = 0;
+	double lower_sigma = 0.1;
+	lower_dist = std::normal_distribution<double>{lower_mean,lower_sigma};
 	
 	double kp = 300.0;
 	character->SetPDParameters(kp,sqrt(2*kp));
@@ -164,9 +178,90 @@ Reset(bool RSI)
 	mTargetPositions = pv.first;
 	mTargetVelocities = pv.second;
 
+// ID variables
+	const int x_ID = 0;
+	const int y_ID = 1;
+	const int z_ID = 2;
+	const int z_pos_ID = 5;
+	const int pelvis_y_pos_ID = 4;
+
+// Indices of important joints
+	const int R_ankle_ID = 3;
+	const int L_ankle_ID = 8;
+	const int torso_ID = 12;
+	const int pelvis_ID = 0;
+
+// virtual ankle joint
 	mCharacter->GetSkeleton()->setPositions(mTargetPositions);
+
+	auto pelvis_y_pos = mCharacter->GetSkeleton()->getJoint(pelvis_ID)->getDof(pelvis_y_pos_ID)->getPosition();
+	//std::cout << mCharacter->GetSkeleton()->getJoint(R_ankle_ID)->getChildBodyNode()->getTransform() << std::endl;
+	
+	Eigen::Isometry3d pelvis_T = mCharacter->GetSkeleton()->getBodyNode(pelvis_ID)->getTransform();
+
+	// LEANING POSITION
+	double f = 1; //factor for scale
+	double tilt_angle = 0; //randomize
+
+	random_seed = time(NULL); //seed the rng from the current time in seconds
+
+	auto urbg = std::mt19937 {random_seed};
+	auto upper = upper_dist(urbg);
+	tilt_angle = upper;
+
+	// auto lower = lower_dist(urbg);
+
+	// double const p = 0.5;  
+	// auto boundary_random = std::bernoulli_distribution{p};
+
+	// if (boundary_random(urbg)){ //0 or 1 for if statement
+	// 	tilt_angle = upper;
+	// }
+	// else{
+	// 	tilt_angle = lower;
+	// }
+	// std::cout << "tilt_angle:" << tilt_angle << std::endl;
+
+	//mCharacter->GetSkeleton()->getJoint(pelvis_ID)->getDof(y_ID)->setPosition(0); //pelvis rot_y, rad
+	mCharacter->GetSkeleton()->getJoint(pelvis_ID)->getDof(x_ID)->setPosition(tilt_angle*f); //pelvis rot_x, rad
+	mCharacter->GetSkeleton()->getJoint(R_ankle_ID)->getDof(x_ID)->setPosition(tilt_angle*f*(-1)); //ankle tilt
+	mCharacter->GetSkeleton()->getJoint(L_ankle_ID)->getDof(x_ID)->setPosition(tilt_angle*f*(-1)); //ankle tilt
+
+	// Global ankle transformation?
+	Eigen::Isometry3d ankle_R_localtransf = mCharacter->GetSkeleton()->getBodyNode(R_ankle_ID)->getTransform();
+	//std::cout << "Eigen::Isometry3d: " << ankle_R_transf.translation() << std::endl;
+	Eigen::Isometry3d ankle_L_localtransf = mCharacter->GetSkeleton()->getBodyNode(L_ankle_ID)->getTransform();
+	Eigen::Isometry3d intermediate_T = mCharacter->GetSkeleton()->getBodyNode(R_ankle_ID)->getParentJoint()->getTransformFromChildBodyNode();
+	auto ankle_R_globaltransf = intermediate_T*ankle_R_localtransf*pelvis_T;
+	double ankle_height = ankle_R_globaltransf.translation()[1];
+
+	//Eigen::Isometry3d ankle_joint_frame2 = ankle_joint->getChildBodyNode()->getTransformFromChildBodyNode();
+	//Eigen::Isometry3d joint_frame = ankle_joint_frame1 * ankle_joint_frame2;
+	//std::cout << "ankle height: " << ankle_height << std::endl;
+
+	mCharacter->GetSkeleton()->getJoint(pelvis_ID)->getDof(pelvis_y_pos_ID)->setPosition(pelvis_y_pos-ankle_R_localtransf.translation()[1]);
+	
+	auto initial_COM = mCharacter->GetSkeleton()->getCOM();
+
+// VELOCITY ADJUSTMENTS
+
+double applied_velocity = 0; //rad/s
+
 	mCharacter->GetSkeleton()->setVelocities(mTargetVelocities);
+	mCharacter->GetSkeleton()->getJoint(pelvis_ID)->getDof(x_ID)->setVelocity(applied_velocity); //pelvis velocity, positive applies anterior
+	mCharacter->GetSkeleton()->getJoint(R_ankle_ID)->getDof(x_ID)->setVelocity(applied_velocity*-1); //ankle velocity
+	mCharacter->GetSkeleton()->getJoint(L_ankle_ID)->getDof(x_ID)->setVelocity(applied_velocity*-1); //ankle velocity
+	//mCharacter->GetSkeleton()->getJoint(pelvis_ID)->getDof(z_pos_ID)->setVelocity(0.025);
+
+	// auto pelvis_velocity = Eigen::VectorXd::Zero(3);
+	// std::cout << pelvis_velocity << std::endl;
+	//pelvis_velocity(2) = 0.5;
+
+	//mCharacter->GetSkeleton()->getJoint(pelvis_ID)->setVelocities(pelvis_velocity);
+	auto initial_COM_vel = mCharacter->GetSkeleton()->getCOMLinearVelocity();
 	mCharacter->GetSkeleton()->computeForwardKinematics(true,false,false);
+	//std::cout << initial_COM << std::endl;
+	//std::cout << initial_COM_vel << std::endl;
 }
 void
 Environment::
@@ -215,6 +310,8 @@ Step()
 		mCharacter->GetSkeleton()->setForces(mDesiredTorque);
 	}
 
+	// double root_y = mCharacter->GetSkeleton()->getBodyNode(0)->getTransform().translation()[1] - mGround->getRootBodyNode()->getCOM()[1];
+	// std::cout << "root y:" << root_y << std::endl;
 	mWorld->step();
 	// Eigen::VectorXd p_des = mTargetPositions;
 	// //p_des.tail(mAction.rows()) += mAction;
