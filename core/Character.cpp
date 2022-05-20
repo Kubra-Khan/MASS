@@ -98,6 +98,7 @@ Reset()
 {
 	mTc = mBVH->GetT0();
 	mTc.translation()[1] = 0.0;
+	
 }
 void
 Character::

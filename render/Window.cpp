@@ -33,7 +33,7 @@ Window(Environment* env)
 	p::exec("import torch.nn as nn",mns);
 	p::exec("import torch.optim as optim",mns);
 	p::exec("import torch.nn.functional as F",mns);
-	p::exec("import torchvision.transforms as T",mns);
+	//p::exec("import torchvision.transforms as T",mns);
 	p::exec("import numpy as np",mns);
 	p::exec("from Model import *",mns);
 }
@@ -47,7 +47,7 @@ Window(Environment* env,const std::string& nn_path)
 	p::exec(str,mns);
 	str = ("num_action = "+std::to_string(mEnv->GetNumAction())).c_str();
 	p::exec(str,mns);
-
+   
 	nn_module = p::eval("SimulationNN(num_state,num_action)",mns);
 
 	p::object load = nn_module.attr("load");

@@ -76,6 +76,11 @@ private:
 	int mRandomSampleIndex;
 
 	double w_q,w_v,w_ee,w_com;
+
+	int random_seed;
+	std::normal_distribution<double> upper_dist;
+	std::normal_distribution<double> lower_dist;
+	
 };
 };
 

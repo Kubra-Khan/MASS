@@ -1,0 +1,171 @@
+Joint Pelvis
+Joint ID: 0
+Parent-Child Bodies: ( world , Pelvis)
+DOFs:
+Pelvis_rot_x	, id: 0, value: 0
+Pelvis_rot_y	, id: 1, value: 3.14159
+Pelvis_rot_z	, id: 2, value: 0
+Pelvis_pos_x	, id: 3, value: 0.43
+Pelvis_pos_y	, id: 4, value: 0
+Pelvis_pos_z	, id: 5, value: 0.5
+
+Joint FemurR
+Joint ID: 1
+Parent-Child Bodies: (Pelvis, FemurR)
+DOFs:
+FemurR_x	, id: 6, value: 0
+FemurR_y	, id: 7, value: 0
+FemurR_z	, id: 8, value: 0
+
+Joint TibiaR
+Joint ID: 2
+Parent-Child Bodies: (FemurR, TibiaR)
+DOFs:
+TibiaR	, id: 9, value: 0
+
+Joint TalusR
+Joint ID: 3
+Parent-Child Bodies: (TibiaR, TalusR)
+DOFs:
+TalusR_x	, id: 10, value: 0
+TalusR_y	, id: 11, value: 0
+TalusR_z	, id: 12, value: 0
+
+Joint FootThumbR
+Joint ID: 4
+Parent-Child Bodies: (TalusR, FootThumbR)
+DOFs:
+FootThumbR	, id: 13, value: 0
+
+Joint FootPinkyR
+Joint ID: 5
+Parent-Child Bodies: (TalusR, FootPinkyR)
+DOFs:
+FootPinkyR	, id: 14, value: 0
+
+Joint FemurL
+Joint ID: 6
+Parent-Child Bodies: (Pelvis, FemurL)
+DOFs:
+FemurL_x	, id: 15, value: 0
+FemurL_y	, id: 16, value: 0
+FemurL_z	, id: 17, value: 0
+
+Joint TibiaL
+Joint ID: 7
+Parent-Child Bodies: (FemurL, TibiaL)
+DOFs:
+TibiaL	, id: 18, value: 0
+
+Joint TalusL
+Joint ID: 8
+Parent-Child Bodies: (TibiaL, TalusL)
+DOFs:
+TalusL_x	, id: 19, value: 0
+TalusL_y	, id: 20, value: 0
+TalusL_z	, id: 21, value: 0
+
+Joint FootThumbL
+Joint ID: 9
+Parent-Child Bodies: (TalusL, FootThumbL)
+DOFs:
+FootThumbL	, id: 22, value: 0
+
+Joint FootPinkyL
+Joint ID: 10
+Parent-Child Bodies: (TalusL, FootPinkyL)
+DOFs:
+FootPinkyL	, id: 23, value: 0
+
+Joint Spine
+Joint ID: 11
+Parent-Child Bodies: (Pelvis, Spine)
+DOFs:
+Spine_x	, id: 24, value: 0
+Spine_y	, id: 25, value: 0
+Spine_z	, id: 26, value: 0
+
+Joint Torso
+Joint ID: 12
+Parent-Child Bodies: (Spine, Torso)
+DOFs:
+Torso_x	, id: 27, value: 0
+Torso_y	, id: 28, value: 0
+Torso_z	, id: 29, value: 0
+
+Joint Neck
+Joint ID: 13
+Parent-Child Bodies: (Torso, Neck)
+DOFs:
+Neck_x	, id: 30, value: 0
+Neck_y	, id: 31, value: 0
+Neck_z	, id: 32, value: 0
+
+Joint Head
+Joint ID: 14
+Parent-Child Bodies: (Neck, Head)
+DOFs:
+Head_x	, id: 33, value: 0
+Head_y	, id: 34, value: 0
+Head_z	, id: 35, value: 0
+
+Joint ShoulderR
+Joint ID: 15
+Parent-Child Bodies: (Torso, ShoulderR)
+DOFs:
+ShoulderR_x	, id: 36, value: 0
+ShoulderR_y	, id: 37, value: 0
+ShoulderR_z	, id: 38, value: 0
+
+Joint ArmR
+Joint ID: 16
+Parent-Child Bodies: (ShoulderR, ArmR)
+DOFs:
+ArmR_x	, id: 39, value: 0
+ArmR_y	, id: 40, value: 0
+ArmR_z	, id: 41, value: 1.5708
+
+Joint ForeArmR
+Joint ID: 17
+Parent-Child Bodies: (ArmR, ForeArmR)
+DOFs:
+ForeArmR	, id: 42, value: 0
+
+Joint HandR
+Joint ID: 18
+Parent-Child Bodies: (ForeArmR, HandR)
+DOFs:
+HandR_x	, id: 43, value: 0
+HandR_y	, id: 44, value: 0
+HandR_z	, id: 45, value: 0
+
+Joint ShoulderL
+Joint ID: 19
+Parent-Child Bodies: (Torso, ShoulderL)
+DOFs:
+ShoulderL_x	, id: 46, value: 0
+ShoulderL_y	, id: 47, value: 0
+ShoulderL_z	, id: 48, value: 0
+
+Joint ArmL
+Joint ID: 20
+Parent-Child Bodies: (ShoulderL, ArmL)
+DOFs:
+ArmL_x	, id: 49, value: 0
+ArmL_y	, id: 50, value: 0
+ArmL_z	, id: 51, value: -1.5708
+
+Joint ForeArmL
+Joint ID: 21
+Parent-Child Bodies: (ArmL, ForeArmL)
+DOFs:
+ForeArmL	, id: 52, value: 0
+
+Joint HandL
+Joint ID: 22
+Parent-Child Bodies: (ForeArmL, HandL)
+DOFs:
+HandL_x	, id: 53, value: 0
+HandL_y	, id: 54, value: 0
+HandL_z	, id: 55, value: 0
+
